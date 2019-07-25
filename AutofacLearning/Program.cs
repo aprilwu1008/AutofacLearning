@@ -1,21 +1,60 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using Autofac;
+using Autofac.Core;
 
 namespace AutofacLearning
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            // The code provided will print ‘Hello World’ to the console.
-            // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
-            Console.WriteLine("Hello World!");
-            Console.ReadKey();
+            var builder = new ContainerBuilder();
 
-            // Go to http://aka.ms/dotnet-get-started-console to continue learning how to build a console app! 
+            builder.RegisterType<SearchAccount>();
+            builder.RegisterType<GetLog>().As<IGetLog>();
+            builder.RegisterType<DB>().As<IDB>();
+
+            var container = builder.Build();
+            var searchAccount = container.Resolve<SearchAccount>();
+
+            var accountAuth = searchAccount.AccountAuth("April");
+            var vaildationResult = searchAccount.GetPassword(accountAuth);
+            Console.WriteLine(vaildationResult == "correct password" ? "doing" : "OH NO");
+            Console.ReadLine();
         }
+
+        //public class FackSearchAccount : ISearchAccount
+        //{
+        //    public bool AccountAuth(string accountName)
+        //    {
+        //        return true;
+        //    }
+
+        //    public string GetPassword(bool result)
+        //    {
+        //        return "correct password";
+        //    }
+        //}
+
+        //public class FakeDB : IDB
+        //{
+        //    public bool Account(string accountName)
+        //    {
+        //        return true;
+        //    }
+        //}
+
+        //public class FakeGetLog : IGetLog
+        //{
+        //    public void Info(string msg)
+        //    {
+        //        Console.WriteLine("fake info");
+        //    }
+        //}
     }
 }
